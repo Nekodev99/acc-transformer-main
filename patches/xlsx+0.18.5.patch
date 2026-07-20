@@ -1,0 +1,12 @@
+diff --git a/node_modules/xlsx/xlsx.js b/node_modules/xlsx/xlsx.js
+index e61c7cc..e8b1002 100644
+--- a/node_modules/xlsx/xlsx.js
++++ b/node_modules/xlsx/xlsx.js
+@@ -867,6 +867,7 @@ return "." + $1 + fill("0", hashq(r[1]).length-$1.length); });
+ 	throw new Error("unsupported format |" + fmt + "|");
+ }
+ function write_num(type, fmt, val) {
++	if(/^[#0]*(,[#0]+)+(\.[#0]+)?$/.test(fmt)) { var _d = fmt.split(".")[1]; fmt = "#,##0" + (_d ? "." + _d : ""); }
+ 	return (val|0) === val ? write_num_int(type, fmt, val) : write_num_flt(type, fmt, val);
+ }
+ function SSF_split_fmt(fmt) {
