@@ -13,6 +13,7 @@ import {
   BarChart3,
   ShoppingCart,
   Truck,
+  PackageCheck,
 } from "lucide-react";
 import {
   parseReport,
@@ -31,6 +32,7 @@ import {
 import { exportWorkbook, type DetailRow } from "@/lib/exportExcel";
 import DailyChart from "@/components/DailyChart";
 import PurchaseApp from "@/components/PurchaseApp";
+import DOApp from "@/components/DOApp";
 import { Stat, DateSelect, ToggleBtn, Hint, PreviewTable, fmt } from "@/components/ui";
 
 interface Entry {
@@ -44,7 +46,13 @@ interface Entry {
 }
 
 type View = "detail" | "customer" | "product" | "chart";
-type Mode = "sale" | "purchase";
+type Mode = "sale" | "purchase" | "do";
+
+const MODE_DESC: Record<Mode, string> = {
+  sale: "รวมหลายไฟล์ · สรุปตามลูกค้า/สินค้า · กราฟยอดขายรายวัน · กรองช่วงวันที่",
+  purchase: "รวมหลายไฟล์ · สรุปตามผู้ขาย/สินค้า · กราฟยอดซื้อรายวัน · กรองช่วงวันที่",
+  do: "แปลงรายงานรับสินค้าเข้า (DO) เป็นตารางแบน · รวมหลายไฟล์ · กรองช่วงวันที่",
+};
 
 const TYPE_BADGE: Record<ReportType, string> = {
   cash: "bg-emerald-100 text-emerald-700",
@@ -65,11 +73,7 @@ export default function Home() {
             <FileSpreadsheet className="h-8 w-8 text-emerald-400" />
             <div>
               <h1 className="text-xl font-semibold">แปลงรายงาน ACC → ตารางข้อมูล</h1>
-              <p className="text-sm text-slate-300">
-                {mode === "sale"
-                  ? "รวมหลายไฟล์ · สรุปตามลูกค้า/สินค้า · กราฟยอดขายรายวัน · กรองช่วงวันที่"
-                  : "รวมหลายไฟล์ · สรุปตามผู้ขาย/สินค้า · กราฟยอดซื้อรายวัน · กรองช่วงวันที่"}
-              </p>
+              <p className="text-sm text-slate-300">{MODE_DESC[mode]}</p>
             </div>
           </div>
 
@@ -81,12 +85,15 @@ export default function Home() {
             <ModeBtn active={mode === "purchase"} onClick={() => setMode("purchase")} icon={<Truck className="h-4 w-4" />}>
               รายงานซื้อเชื่อ
             </ModeBtn>
+            <ModeBtn active={mode === "do"} onClick={() => setMode("do")} icon={<PackageCheck className="h-4 w-4" />}>
+              รับสินค้า (DO)
+            </ModeBtn>
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-6xl space-y-6 px-6 py-8">
-        {mode === "sale" ? <SaleApp /> : <PurchaseApp />}
+        {mode === "sale" ? <SaleApp /> : mode === "purchase" ? <PurchaseApp /> : <DOApp />}
       </div>
 
       <footer className="mx-auto max-w-6xl px-6 py-8 text-center text-xs text-slate-400">

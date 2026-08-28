@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import { OUTPUT_COLUMNS, OutputRow } from "./parseReport";
 import { PURCHASE_COLUMNS, PurchaseRow } from "./parsePurchase";
+import { DO_COLUMNS, DORow } from "./parseDO";
 import {
   SUMMARY_COLUMNS,
   SummaryRow,
@@ -102,6 +103,17 @@ export function exportPurchaseWorkbook(data: PurchaseExportData): void {
   XLSX.utils.book_append_sheet(wb, aoaSheet([...PURCHASE_PRODUCT_COLUMNS], products, PURCHASE_PRODUCT_WIDTHS), "สรุปตามสินค้า");
   XLSX.utils.book_append_sheet(wb, aoaSheet(["วันที่", "ยอดซื้อ", "จำนวนใบ"], dailyRows, PURCHASE_DAILY_WIDTHS), "ยอดซื้อรายวัน");
 
+  saveWorkbook(wb, filenameBase);
+}
+
+/* -------------------------- goods receipt (DO) -------------------------- */
+
+const DO_WIDTHS = [13, 11, 17, 45, 16, 14, 14, 42, 8, 11, 10, 10];
+
+/** DO workbook: a single flat sheet matching the hand-corrected "หลัง" tab. */
+export function exportDOWorkbook(detail: DORow[], filenameBase: string): void {
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, aoaSheet([...DO_COLUMNS], detail, DO_WIDTHS), "รับสินค้า (DO)");
   saveWorkbook(wb, filenameBase);
 }
 
