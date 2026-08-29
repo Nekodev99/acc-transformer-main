@@ -2,6 +2,7 @@ import * as XLSX from "xlsx";
 import { OUTPUT_COLUMNS, OutputRow } from "./parseReport";
 import { PURCHASE_COLUMNS, PurchaseRow } from "./parsePurchase";
 import { DO_COLUMNS, DORow } from "./parseDO";
+import { STOCK_COLUMNS, StockRow } from "./parseStock";
 import {
   SUMMARY_COLUMNS,
   SummaryRow,
@@ -114,6 +115,17 @@ const DO_WIDTHS = [13, 11, 17, 45, 16, 14, 14, 42, 8, 11, 10, 10];
 export function exportDOWorkbook(detail: DORow[], filenameBase: string): void {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, aoaSheet([...DO_COLUMNS], detail, DO_WIDTHS), "รับสินค้า (DO)");
+  saveWorkbook(wb, filenameBase);
+}
+
+/* --------------------------- stock balance --------------------------- */
+
+const STOCK_WIDTHS = [10, 13, 22, 45, 14, 22, 10, 12];
+
+/** Stock-balance workbook: a single flat sheet matching the "หลัง" tab. */
+export function exportStockWorkbook(detail: StockRow[], filenameBase: string): void {
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, aoaSheet([...STOCK_COLUMNS], detail, STOCK_WIDTHS), "ยอดคงเหลือ");
   saveWorkbook(wb, filenameBase);
 }
 

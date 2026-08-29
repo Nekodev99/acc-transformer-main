@@ -14,6 +14,7 @@ import {
   ShoppingCart,
   Truck,
   PackageCheck,
+  Boxes,
 } from "lucide-react";
 import {
   parseReport,
@@ -33,6 +34,7 @@ import { exportWorkbook, type DetailRow } from "@/lib/exportExcel";
 import DailyChart from "@/components/DailyChart";
 import PurchaseApp from "@/components/PurchaseApp";
 import DOApp from "@/components/DOApp";
+import StockApp from "@/components/StockApp";
 import { Stat, DateSelect, ToggleBtn, Hint, PreviewTable, fmt } from "@/components/ui";
 
 interface Entry {
@@ -46,12 +48,13 @@ interface Entry {
 }
 
 type View = "detail" | "customer" | "product" | "chart";
-type Mode = "sale" | "purchase" | "do";
+type Mode = "sale" | "purchase" | "do" | "stock";
 
 const MODE_DESC: Record<Mode, string> = {
   sale: "รวมหลายไฟล์ · สรุปตามลูกค้า/สินค้า · กราฟยอดขายรายวัน · กรองช่วงวันที่",
   purchase: "รวมหลายไฟล์ · สรุปตามผู้ขาย/สินค้า · กราฟยอดซื้อรายวัน · กรองช่วงวันที่",
   do: "แปลงรายงานรับสินค้าเข้า (DO) เป็นตารางแบน · รวมหลายไฟล์ · กรองช่วงวันที่",
+  stock: "แปลงรายงานยอดสินค้าคงเหลือ (แยกตามคลัง/ที่เก็บ) เป็นตารางแบน · รวมหลายไฟล์",
 };
 
 const TYPE_BADGE: Record<ReportType, string> = {
@@ -88,12 +91,23 @@ export default function Home() {
             <ModeBtn active={mode === "do"} onClick={() => setMode("do")} icon={<PackageCheck className="h-4 w-4" />}>
               รับสินค้า (DO)
             </ModeBtn>
+            <ModeBtn active={mode === "stock"} onClick={() => setMode("stock")} icon={<Boxes className="h-4 w-4" />}>
+              ยอดสินค้าคงเหลือ
+            </ModeBtn>
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-6xl space-y-6 px-6 py-8">
-        {mode === "sale" ? <SaleApp /> : mode === "purchase" ? <PurchaseApp /> : <DOApp />}
+        {mode === "sale" ? (
+          <SaleApp />
+        ) : mode === "purchase" ? (
+          <PurchaseApp />
+        ) : mode === "do" ? (
+          <DOApp />
+        ) : (
+          <StockApp />
+        )}
       </div>
 
       <footer className="mx-auto max-w-6xl px-6 py-8 text-center text-xs text-slate-400">
